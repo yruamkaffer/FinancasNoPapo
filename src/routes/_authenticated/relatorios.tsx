@@ -56,8 +56,12 @@ function ReportsPage() {
     });
   }, [q.data, period]);
 
-  const income = filtered.filter((t) => t.type === "income").reduce((s, t) => s + Number(t.amount), 0);
-  const expense = filtered.filter((t) => t.type === "expense").reduce((s, t) => s + Number(t.amount), 0);
+  const income = filtered
+    .filter((t) => t.type === "income")
+    .reduce((s, t) => s + Number(t.amount), 0);
+  const expense = filtered
+    .filter((t) => t.type === "expense")
+    .reduce((s, t) => s + Number(t.amount), 0);
   const balance = income - expense;
 
   const byCategory = useMemo(() => {
@@ -74,14 +78,26 @@ function ReportsPage() {
     <div className="space-y-5">
       <div>
         <h1 className="font-display text-3xl text-foreground">Relatórios</h1>
-        <p className="text-sm text-muted-foreground">Veja para onde o dinheiro foi. Todos os números também aparecem em texto.</p>
+        <p className="text-sm text-muted-foreground">
+          Veja para onde o dinheiro foi. Todos os números também aparecem em
+          texto.
+        </p>
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
         <div>
-          <label htmlFor="p" className="mb-1 block text-xs font-medium text-muted-foreground">Período</label>
-          <select id="p" value={period} onChange={(e) => setPeriod(e.target.value as Period)}
-            className="rounded-lg border border-input bg-background px-3 py-2 text-sm">
+          <label
+            htmlFor="p"
+            className="mb-1 block text-xs font-medium text-muted-foreground"
+          >
+            Período
+          </label>
+          <select
+            id="p"
+            value={period}
+            onChange={(e) => setPeriod(e.target.value as Period)}
+            className="rounded-lg border border-input bg-background px-3 py-2 text-sm"
+          >
             <option value="current">Este mês</option>
             <option value="last">Mês passado</option>
             <option value="3m">Últimos 3 meses</option>
@@ -89,12 +105,18 @@ function ReportsPage() {
           </select>
         </div>
         <fieldset>
-          <legend className="mb-1 text-xs font-medium text-muted-foreground">Visualização</legend>
+          <legend className="mb-1 text-xs font-medium text-muted-foreground">
+            Visualização
+          </legend>
           <div className="inline-flex overflow-hidden rounded-lg border border-input">
             {(["chart", "table"] as const).map((v) => (
-              <button key={v} type="button" onClick={() => setView(v)}
+              <button
+                key={v}
+                type="button"
+                onClick={() => setView(v)}
                 aria-pressed={view === v}
-                className={`px-3 py-2 text-sm font-medium ${view === v ? "bg-primary text-primary-foreground" : "bg-background text-foreground hover:bg-secondary"}`}>
+                className={`px-3 py-2 text-sm font-medium ${view === v ? "bg-primary text-primary-foreground" : "bg-background text-foreground hover:bg-secondary"}`}
+              >
                 {v === "chart" ? "Gráfico" : "Tabela"}
               </button>
             ))}
@@ -102,16 +124,32 @@ function ReportsPage() {
         </fieldset>
       </div>
 
+      {q.isError && (
+        <p
+          role="alert"
+          className="rounded-lg border border-destructive/40 bg-destructive/10 p-4 text-sm text-destructive"
+        >
+          Não foi possível carregar os dados do relatório. Tente atualizar a
+          página.
+        </p>
+      )}
+
       {/* Resumo */}
-      <div className="grid gap-3 sm:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-3" aria-busy={q.isLoading}>
         <SummaryCard label="Receitas" value={formatBRL(income)} />
         <SummaryCard label="Despesas" value={formatBRL(expense)} />
-        <SummaryCard label="Saldo" value={formatBRL(balance)} highlight={balance >= 0 ? "positive" : "negative"} />
+        <SummaryCard
+          label="Saldo"
+          value={formatBRL(balance)}
+          highlight={balance >= 0 ? "positive" : "negative"}
+        />
       </div>
 
       {/* Gastos por categoria */}
       <section aria-labelledby="cats">
-        <h2 id="cats" className="mb-3 font-display text-xl text-foreground">Gastos por categoria</h2>
+        <h2 id="cats" className="mb-3 font-display text-xl text-foreground">
+          Gastos por categoria
+        </h2>
         {q.isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : byCategory.length === 0 ? (
@@ -119,9 +157,13 @@ function ReportsPage() {
             Nenhuma despesa registrada no período.
           </p>
         ) : view === "chart" ? (
-          <ul className="space-y-3" aria-label="Gráfico de barras por categoria">
+          <ul
+            className="space-y-3"
+            aria-label="Gráfico de barras por categoria"
+          >
             {byCategory.map(([cat, val]) => {
-              const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
+              const pct =
+                totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
               return (
                 <li key={cat}>
                   <div className="flex items-baseline justify-between text-sm">
@@ -133,10 +175,15 @@ function ReportsPage() {
                   <div
                     className="mt-1 h-3 overflow-hidden rounded-full bg-secondary"
                     role="progressbar"
-                    aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}
+                    aria-valuenow={pct}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
                     aria-label={`${cat}: ${pct} por cento das despesas, ${formatBRL(val)}`}
                   >
-                    <div className="h-full bg-expense" style={{ width: `${pct}%` }} />
+                    <div
+                      className="h-full bg-expense"
+                      style={{ width: `${pct}%` }}
+                    />
                   </div>
                 </li>
               );
@@ -148,14 +195,23 @@ function ReportsPage() {
               <caption className="sr-only">Gastos por categoria</caption>
               <thead className="bg-secondary text-secondary-foreground">
                 <tr>
-                  <th scope="col" className="p-3 text-left">Categoria</th>
-                  <th scope="col" className="p-3 text-right">Valor</th>
-                  <th scope="col" className="p-3 text-right">% do total</th>
+                  <th scope="col" className="p-3 text-left">
+                    Categoria
+                  </th>
+                  <th scope="col" className="p-3 text-right">
+                    Valor
+                  </th>
+                  <th scope="col" className="p-3 text-right">
+                    % do total
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {byCategory.map(([cat, val]) => {
-                  const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
+                  const pct =
+                    totalExpense > 0
+                      ? Math.round((val / totalExpense) * 100)
+                      : 0;
                   return (
                     <tr key={cat} className="border-t border-border">
                       <td className="p-3 font-medium">{cat}</td>
@@ -177,7 +233,9 @@ function ReportsPage() {
 
       {/* Maiores despesas */}
       <section aria-labelledby="top">
-        <h2 id="top" className="mb-3 font-display text-xl text-foreground">Maiores despesas do período</h2>
+        <h2 id="top" className="mb-3 font-display text-xl text-foreground">
+          Maiores despesas do período
+        </h2>
         {filtered.filter((t) => t.type === "expense").length === 0 ? (
           <p className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
             Sem despesas neste período.
@@ -189,17 +247,26 @@ function ReportsPage() {
               .sort((a, b) => Number(b.amount) - Number(a.amount))
               .slice(0, 5)
               .map((t, i) => (
-                <li key={t.id} className="flex items-center justify-between gap-3 p-4">
+                <li
+                  key={t.id}
+                  className="flex items-center justify-between gap-3 p-4"
+                >
                   <span className="flex min-w-0 items-center gap-3">
                     <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold">
                       {i + 1}
                     </span>
                     <span className="min-w-0">
-                      <span className="block truncate font-medium">{t.description}</span>
-                      <span className="text-xs text-muted-foreground">{t.category}</span>
+                      <span className="block truncate font-medium">
+                        {t.description}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {t.category}
+                      </span>
                     </span>
                   </span>
-                  <span className="shrink-0 font-semibold text-expense">− {formatBRL(t.amount)}</span>
+                  <span className="shrink-0 font-semibold text-expense">
+                    − {formatBRL(t.amount)}
+                  </span>
                 </li>
               ))}
           </ol>
@@ -209,12 +276,27 @@ function ReportsPage() {
   );
 }
 
-function SummaryCard({ label, value, highlight }: { label: string; value: string; highlight?: "positive" | "negative" }) {
-  const color = highlight === "positive" ? "text-income" : highlight === "negative" ? "text-expense" : "text-foreground";
+function SummaryCard({
+  label,
+  value,
+  highlight,
+}: {
+  label: string;
+  value: string;
+  highlight?: "positive" | "negative";
+}) {
+  const color =
+    highlight === "positive"
+      ? "text-income"
+      : highlight === "negative"
+        ? "text-expense"
+        : "text-foreground";
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <p className="text-sm text-muted-foreground">{label}</p>
-      <p className={`mt-1 font-display text-2xl font-semibold ${color}`}>{value}</p>
+      <p className={`mt-1 font-display text-2xl font-semibold ${color}`}>
+        {value}
+      </p>
     </div>
   );
 }

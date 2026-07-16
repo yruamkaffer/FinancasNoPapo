@@ -1,0 +1,14 @@
+node_modules/
+.output/
+.wrangler/
+dist/
+.vinxi/
+supabase/.branches/
+supabase/.temp/
+.env
+.env.*
+!.env.example
+*.local
+*.log
+.DS_Store
+Thumbs.db

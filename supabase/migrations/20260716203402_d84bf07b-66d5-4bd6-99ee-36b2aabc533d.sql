@@ -1,1 +1,2 @@
-UPDATE auth.users SET email_confirmed_at = COALESCE(email_confirmed_at, now()) WHERE email_confirmed_at IS NULL;
+-- Email confirmation must be controlled by the Supabase Auth settings.
+-- Never confirm every account through a data migration.
