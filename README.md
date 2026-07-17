@@ -32,6 +32,11 @@ O projeto foi orientado por princípios de **Design Universal**, buscando atende
 
 > Este é um projeto educacional e de portfólio. Ele não substitui aconselhamento financeiro profissional.
 
+<img src="FinancasNoPapo (1).PNG">
+<img src="FinancasNoPapo (2).PNG">
+<img src="FinancasNoPapo (3).PNG">
+<img src="FinancasNoPapo (4).PNG">
+
 ## 🇺🇸 About the project
 
 **Finanças no Papo** is a personal finance web application designed for people who want to manage income, expenses and savings goals without relying on spreadsheets or complicated forms.
